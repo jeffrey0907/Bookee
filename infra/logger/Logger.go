@@ -1,27 +1,12 @@
 package logger
 
-import "log"
+import (
+    "log"
+    "os"
+)
 
-func Debug(args ...string) {
-    log.Println(args)
-}
+var bookeeLog = log.New(os.Stderr, "", log.LstdFlags)
 
-func Trace(args ...string) {
-    log.Println(args)
-}
-
-func Info(args ...string) {
-    log.Println(args)
-}
-
-func Warn(args ...string) {
-    log.Println(args)
-}
-
-func Error(args ...string) {
-    log.Println(args)
-}
-
-func Fatal(args ...string) {
-    log.Println(args)
+func L() *log.Logger {
+    return bookeeLog
 }

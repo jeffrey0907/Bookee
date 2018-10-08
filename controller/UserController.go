@@ -10,17 +10,18 @@ import (
 )
 
 type userController struct {
-    userService service.UserService
+    userService    service.UserService
+    sessionService service.SessionService
 }
 
 func RegistUserController(userGroup *gin.RouterGroup) (err error) {
-    ctrl := userController{userService: service.UserSvc()}
+    ctrl := userController{userService: service.UserSvc(), sessionService: service.SessionSvc()}
 
     userGroup.POST("/login", ctrl.login)
     userGroup.POST("/login/wx", ctrl.loginWX)
     userGroup.POST("/register", ctrl.register)
 
-    userGroup.GET("/books", service.SessionSvc().CheckJWT, ctrl.listBooks)
+    userGroup.GET("/books", ctrl.checkToken, ctrl.listBooks)
     return
 }
 
@@ -66,6 +67,22 @@ func (uc *userController) login(c *gin.Context) {
     }
 }
 
-func (uc *userController) listBooks(c *gin.Context) {
+func (uc *userController) checkToken(c *gin.Context) {
+    jwt := c.GetHeader("Authorization")
+    if len(jwt) <=0 {
+        jwt = c.Param("jwt")
+    }
+    if len(jwt) <= 0  {
+        c.Abort()
+    } else {
+        uid, err := uc.sessionService.CheckJWT(jwt)
+        if err == nil {
+            c.Params = append(c.Params, gin.Param{Key:"uid",Value:string(uid)})
+        } else {
+            c.Abort()
+        }
+    }
+}
 
+func (uc *userController) listBooks(c *gin.Context) {
 }

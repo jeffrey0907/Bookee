@@ -2,10 +2,14 @@ package repository
 
 import (
     "Bookee/domain/user"
+    "Bookee/infra/err"
     "sync"
 )
 
 type SessionRepository interface {
+    Get(uid int64) *user.Session
+    Save(session *user.Session) error
+    Delete(uid int64) (*user.Session, error)
 }
 
 var (
@@ -29,21 +33,60 @@ func NewSessionRepo() SessionRepository {
 //
 // Implement SessionRepository With MySql
 //
+func newSessionRepoMySql() SessionRepository {
+    return &sessionRepoMysql{}
+}
+
 type sessionRepoMysql struct {
 }
 
-func newSessionRepoMySql() SessionRepository {
+func (this *sessionRepoMysql) Get(uid int64) *user.Session {
+    return nil
+}
 
+func (this *sessionRepoMysql) Save(session *user.Session) error {
+    return nil
+}
+
+func (this *sessionRepoMysql) Delete(uid int64) (*user.Session, error) {
+    return nil, nil
 }
 
 //
 // Implement SessionRepository With Memory
 //
+func newSessionRepoMem() SessionRepository {
+    repo := &sessionRepoMem{}
+    repo.sessions = make(map[int64]*user.Session)
+    return repo
+}
+
 type sessionRepoMem struct {
     sessions map[int64]*user.Session
 }
 
-func newSessionRepoMem() SessionRepository {
-    repo := &sessionRepoMem{}
+func (this *sessionRepoMem) Get(uid int64) *user.Session {
+    if se, ok := this.sessions[uid]; ok {
+        return se
+    } else {
+        return nil
+    }
+}
 
+func (this *sessionRepoMem) Save(session *user.Session) error {
+    if session != nil {
+        this.sessions[session.Uid] = session
+        return nil
+    } else {
+        return err.ErrIllegalArgument
+    }
+}
+
+func (this *sessionRepoMem) Delete(uid int64) (*user.Session, error) {
+    if session, ok := this.sessions[uid]; ok {
+        delete(this.sessions, uid)
+        return session, nil
+    } else {
+        return nil, err.ErrIllegalArgument
+    }
 }

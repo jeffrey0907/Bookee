@@ -3,7 +3,8 @@ package service
 import (
     "Bookee/domain/user"
     "Bookee/infra/repository"
-    "github.com/gin-gonic/gin"
+    "github.com/dgrijalva/jwt-go"
+    "time"
 
     "sync"
 )
@@ -13,8 +14,12 @@ var (
     onceSessionService sync.Once
 )
 
+const (
+    tokenSecret = `123456`
+)
+
 type SessionService interface {
-    CheckJWT(c *gin.Context)
+    CheckJWT(jwt string) (int64, error)
     UpdateWX(user *user.User, openid string, sessionKey string, unionid string) (string, error)
 }
 
@@ -38,17 +43,39 @@ func NewSessionSvc(sessionRepo repository.SessionRepository) SessionService {
 //
 // Implement SessionService
 //
-
 type sessionServiceImp struct {
     sessionRepo repository.SessionRepository
 }
 
 func (this *sessionServiceImp) UpdateWX(
-    user *user.User, openid string, sessionKey string, unionid string) (token string, err error) {
-    this.GetWXSession(user)
+    usr *user.User, openid string, sessionKey string, unionid string) (token string, err error) {
+    session := this.sessionRepo.Get(usr.Uid)
+    if session == nil {
+        session = user.NewSession(usr.Uid, openid, sessionKey, unionid)
+        this.sessionRepo.Save(session)
+    }
+    token, err = this.makeJWT(session)
     return
 }
 
-func (this *sessionServiceImp) CheckJWT(c *gin.Context) {
+func (this *sessionServiceImp) makeJWT(session *user.Session) (tokenString string, err error) {
+    token := jwt.New(jwt.SigningMethodHS256)
+    claims := make(jwt.MapClaims)
+    claims["uid"] = session.Uid
+    claims["exp"] = session.Expire.Add(time.Hour * 24).Unix()
+    claims["iat"] = time.Now().Unix()
+    token.Claims = claims
 
+    tokenString, err = token.SignedString([]byte(tokenSecret))
+    return
+}
+
+func (this *sessionServiceImp) CheckJWT(tokenString string) (uid int64, err error) {
+    token, err :=jwt.Parse(tokenString, func(token *jwt.Token) (interface{}, error) {
+        return []byte(tokenSecret), nil
+    })
+    if err != nil && token.Valid {
+        uid = -1
+    }
+    return
 }
