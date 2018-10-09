@@ -1,6 +1,7 @@
 package config
 
 import (
+    "Bookee/infra/logger"
     "fmt"
     "gopkg.in/yaml.v2"
     "io/ioutil"
@@ -34,21 +35,24 @@ func loadConfigs(data string) configType {
     }
 }
 
-func loadConfigsFromFile() configType {
-    data, err := ioutil.ReadFile(`conf/application.yaml`)
+func loadConfigsByPath(path string) configType {
+    data, err := ioutil.ReadFile(path)
     if err == nil {
         return loadConfigs(string(data))
     } else {
-        // TODO log error
-        log.Println(err.Error())
+        logger.L().Println(err.Error())
         return nil
     }
+}
+
+func loadConfigsDefault() configType {
+    return loadConfigsByPath(`conf/application.yaml`)
 }
 
 func getConfigs() configType {
     onceConfigs.Do(func() {
         if configs == nil {
-            configs = loadConfigsFromFile()
+            configs = loadConfigsDefault()
         }
     })
     return configs

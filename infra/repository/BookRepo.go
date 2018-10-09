@@ -18,6 +18,12 @@ func BookRepo() BookRepository {
 }
 
 func NewBookRepo() BookRepository {
-	repo := newSessionRepoMem()
+	repo := &bookRepositoryImp{}
 	return repo
+}
+
+//
+// Implement BookRepository
+//
+type bookRepositoryImp struct {
 }

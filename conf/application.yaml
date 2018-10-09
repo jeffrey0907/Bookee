@@ -1,0 +1,10 @@
+datasource:
+  active: "sqlite"
+  sqlite:
+    url: "bookee.db"
+  mysql:
+    url: "localhost:3306/db_bookee?charset=utf8&parseTime=True&loc=Local"
+    username: "root"
+    password: "root"
+    maxopenconns: 5
+    maxidleconns: 2

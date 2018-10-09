@@ -3,6 +3,7 @@ package service
 import (
 	"Bookee/domain/user"
 	"Bookee/infra/client/wxclient"
+	"Bookee/infra/myerr"
 	"sync"
 )
 
@@ -41,6 +42,7 @@ func NewUserSvc(session SessionService) (service UserService) {
 
 type userServiceImp struct {
 	session SessionService
+	userRepo UserRe
 }
 
 func (userService *userServiceImp) Get(uid int64) *user.User {
@@ -48,7 +50,8 @@ func (userService *userServiceImp) Get(uid int64) *user.User {
 }
 
 func (userService *userServiceImp) GetByWxOpenId(openid string) (*user.User, error) {
-	return nil, nil
+
+	return nil, myerr.ErrNotExist
 }
 
 func (userService *userServiceImp) LoginWX(code string) (token string, err error) {

@@ -4,7 +4,7 @@ import (
     "testing"
 )
 
-func TestYAML(t *testing.T) {
+func TestLoadConfigs(t *testing.T) {
 	var data = `
 A: Easy!
 B:
@@ -18,4 +18,8 @@ B:
 `
     configs = loadConfigs(data)
     t.Log(GetStringOrEmpty(`B.E`))
+}
+
+func TestLoadConfigByPath(t *testing.T) {
+
 }
