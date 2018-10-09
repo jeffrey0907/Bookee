@@ -2,7 +2,7 @@ package repository
 
 import (
     "Bookee/domain/user"
-    "Bookee/infra/err"
+    "Bookee/infra/myerr"
     "sync"
 )
 
@@ -78,7 +78,7 @@ func (this *sessionRepoMem) Save(session *user.Session) error {
         this.sessions[session.Uid] = session
         return nil
     } else {
-        return err.ErrIllegalArgument
+        return myerr.ErrIllegalArgument
     }
 }
 
@@ -87,6 +87,6 @@ func (this *sessionRepoMem) Delete(uid int64) (*user.Session, error) {
         delete(this.sessions, uid)
         return session, nil
     } else {
-        return nil, err.ErrIllegalArgument
+        return nil, myerr.ErrIllegalArgument
     }
 }

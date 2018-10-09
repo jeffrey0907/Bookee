@@ -27,7 +27,7 @@ func NewBookSvc(bookRepo repository.BookRepository) BookService {
 	if bookRepo != nil {
 		bookSvc.bookRepo = bookRepo
 	} else {
-		bookSvc.bookRepo = BookSvc()
+		bookSvc.bookRepo = repository.BookRepo()
 	}
 	return bookSvc
 }
