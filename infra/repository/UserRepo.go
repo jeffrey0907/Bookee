@@ -34,9 +34,10 @@ type userRepositoryImp struct {
 }
 
 func (userRepo *userRepositoryImp) GetByUid(uid int64) *user.User {
-
+    return &user.User{}
 }
 
 func (userRepo *userRepositoryImp) GetByOpenId(openId string) *user.User {
-
+    //DB().Model(&user.User{}).Get()
+    return &user.User{}
 }

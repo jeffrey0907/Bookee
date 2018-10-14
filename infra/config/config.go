@@ -46,7 +46,7 @@ func loadConfigsByPath(path string) configType {
 }
 
 func loadConfigsDefault() configType {
-    return loadConfigsByPath(`conf/application.yaml`)
+    return loadConfigsByPath(`../../conf/application.yaml`)
 }
 
 func getConfigs() configType {

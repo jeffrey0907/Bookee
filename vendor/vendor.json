@@ -95,6 +95,14 @@
 			"versionExact": "v1.9.1"
 		},
 		{
+			"checksumSHA1": "YBNroGKEItNe0bENTEKbx71DyGQ=",
+			"path": "github.com/jinzhu/gorm/dialects/sqlite",
+			"revision": "6ed508ec6a4ecb3531899a69cbc746ccf65a4166",
+			"revisionTime": "2018-02-27T23:43:56Z",
+			"version": "v1.9.1",
+			"versionExact": "v1.9.1"
+		},
+		{
 			"checksumSHA1": "mfb/EusMwfajCPq0lwLWM/pvqI4=",
 			"path": "github.com/jinzhu/inflection",
 			"revision": "04140366298a54a039076d798123ffa108fff46c",

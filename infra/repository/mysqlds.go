@@ -6,6 +6,7 @@ import (
     "fmt"
     "github.com/jinzhu/gorm"
     _ "github.com/jinzhu/gorm/dialects/mysql"
+    _ "github.com/jinzhu/gorm/dialects/sqlite"
     "strings"
     "sync"
 )
@@ -34,6 +35,7 @@ func DB() *gorm.DB {
             }
             return db
         }
+
         sqliteFunc := func() *gorm.DB {
             url := config.GetStringOrEmpty(`datasource.sqlite.url`)
             db, err := gorm.Open("sqlite3", url)
@@ -45,9 +47,9 @@ func DB() *gorm.DB {
         }
 
         if strings.EqualFold(`sqlite`, activedb) {
-            mysqldb = mysqlFunc()
-        } else {
             mysqldb = sqliteFunc()
+        } else {
+            mysqldb = mysqlFunc()
         }
     })
     return mysqldb
